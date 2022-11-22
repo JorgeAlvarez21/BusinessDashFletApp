@@ -60,6 +60,10 @@ def main(page: ft.Page):
             ft.Container(ft.Row(controls=rows)))
         return items
 
+
+    """This removeRows function where we remove the rows in the and we expect them to disappear from the Column, the variable df has been refreshed, 
+        which is where they had been generated"""
+        
     def removeRows(e):
         for row in rows_to_remove:
             df.drop(row, inplace=True)
