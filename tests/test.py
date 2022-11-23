@@ -14,14 +14,16 @@ def main(page: ft.Page):
     page.theme_mode = "light" 
     page.window_height = 950
     page.window_width = 1300
-
+    entries_plane = ft.Ref[ft.Column]()
     # Marking columns for deletion 
-    rows_to_remove = [1, 3, 4]
-
     df = createDataframe()
+    rows_to_remove = [1, 3, 4]
+    rem_names = [df.names[i] for i in rows_to_remove]
+    print(rem_names)
+
+
 
     print("BEFORE REMOVING ROWS \n", df)
-
 
     def createRows():
         n_Rows = len(df.index)
@@ -32,7 +34,7 @@ def main(page: ft.Page):
         items= []
         column = ft.Column()
         for row_i in range(n_Rows):
-            if row_i in rows_to_remove:
+            if row_i in rows_to_remove and df['names'].iloc[row_i] in rem_names:
                 set_color = red_color
             else:
                 set_color = amber_color
@@ -70,6 +72,10 @@ def main(page: ft.Page):
         print("AFTER \n", df)
         page.add(ft.Text('Rows Removed', size=25))
         widget.update()
+        entries_plane.current.clean()
+        for entry in createColumns():
+            entries_plane.current.controls.append(entry)
+        
         page.update()
                                     
     widget = ft.Row(
@@ -78,9 +84,8 @@ def main(page: ft.Page):
                 ft.Column(
                 controls=[
                     ft.Container(width=850,
-                        content=ft.Column(spacing=4,
-                            controls=
-                                createColumns() #### HERE IS WERE WE ADD THE DATAFRAME ITEMS
+                        content=ft.Column(ref=entries_plane, spacing=4
+                                 #### HERE IS WERE WE ADD THE DATAFRAME ITEMS
                         )
                     )
                 ]
@@ -98,7 +103,8 @@ def main(page: ft.Page):
             )
         )
     ])
-
+    for entry in createColumns():
+        entries_plane.current.controls.append(entry)
     page.add(widget)
 
 ft.app(target=main)
